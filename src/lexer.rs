@@ -1,5 +1,26 @@
 #![allow(unused_variables, dead_code, clippy::single_match)]
 use std::num::ParseIntError;
+use std::error::Error;
+
+#[derive(Debug, Clone)]
+pub struct GenericError {}
+
+impl std::fmt::Display for GenericError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+		let _ = f.write_str("Generic error thrown.");
+        Ok(())
+    }
+}
+
+impl Error for GenericError {}
+
+impl From<ParseIntError> for GenericError {
+    fn from(_: ParseIntError) -> Self {
+        Self {}
+    }
+}
+
+////////////
 
 pub enum Keywords {
 	For,
@@ -29,7 +50,7 @@ fn match_keyword(kw: &str) -> Keywords {
 
 ////////////////
 
-pub fn tokenize<T: ToString>(t: T) -> Result<Vec<u8>, ParseIntError> {
+pub fn tokenize<T: ToString>(t: T) -> Result<Vec<u8>, GenericError> {
 	let file: String = t.to_string();
 	let mut output: String = String::new();
 
@@ -46,6 +67,10 @@ pub fn tokenize<T: ToString>(t: T) -> Result<Vec<u8>, ParseIntError> {
 				let (name, val) = parse_int(&body)?;
 				output.push_str(format!("<int name={name} val={val}>").as_str());
 			},
+			Keywords::Bool => {
+				let (name, val) = parse_bool(&body)?;
+				output.push_str(format!("<bool name={name} val={val}>").as_str());
+			},
 			_ => ()
 		}
 	}
@@ -61,6 +86,24 @@ fn parse_int(line: &str) -> Result<(String, i32), ParseIntError> {
 
 	let (name, raw_type) = (split[0], split[1]);
 	let rich_type = raw_type.parse::<i32>()?;
+
+	Ok( (name.to_owned(), rich_type) )
+}
+
+fn parse_bool(line: &str) -> Result<(String, bool), GenericError> {
+	let t = line.replace(' ', "");  // Strip whitespace 
+	let split = t.split('=').collect::<Vec<&str>>();
+
+	let (name, raw_type) = (split[0], split[1]);
+	let rich_type = {
+		if raw_type == "true" {
+			Ok(true)
+		} else if raw_type == "false" {
+			Ok(false)
+		} else {
+			Err(GenericError {})
+		}
+	}?;
 
 	Ok( (name.to_owned(), rich_type) )
 }
