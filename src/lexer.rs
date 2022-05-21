@@ -71,6 +71,10 @@ pub fn tokenize<T: ToString>(t: T) -> Result<Vec<u8>, GenericError> {
 				let (name, val) = parse_bool(&body)?;
 				output.push_str(format!("<bool name={name} val={val}>").as_str());
 			},
+			Keywords::String => {
+				let (name, val) = parse_string(&body)?;
+				output.push_str(format!("<string name={name} val={val}>").as_str());
+			},
 			_ => ()
 		}
 	}
@@ -104,6 +108,16 @@ fn parse_bool(line: &str) -> Result<(String, bool), GenericError> {
 			Err(GenericError {})
 		}
 	}?;
+
+	Ok( (name.to_owned(), rich_type) )
+}
+
+fn parse_string(line: &str) -> Result<(String, String), GenericError> {
+	let t = line.replace(' ', "");  // Strip whitespace 
+	let split = t.split('=').collect::<Vec<&str>>();
+
+	let (name, raw_type) = (split[0], split[1]);
+	let rich_type = raw_type.to_string();
 
 	Ok( (name.to_owned(), rich_type) )
 }
