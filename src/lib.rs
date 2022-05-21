@@ -1,5 +1,4 @@
 mod lexer;
-mod untyped_array;
 
 #[cfg(test)]
 mod tests {
