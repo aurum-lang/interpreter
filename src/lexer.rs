@@ -65,15 +65,15 @@ pub fn tokenize<T: ToString>(t: T) -> Result<Vec<u8>, GenericError> {
 		match match_keyword(kw) {
 			Keywords::Integer => {
 				let (name, val) = parse_int(&body)?;
-				output.push_str(format!("<int name={name} val={val}>").as_str());
+				output.push_str(format!("<int name={name} val={val}>\n").as_str());
 			},
 			Keywords::Bool => {
 				let (name, val) = parse_bool(&body)?;
-				output.push_str(format!("<bool name={name} val={val}>").as_str());
+				output.push_str(format!("<bool name={name} val={val}>\n").as_str());
 			},
 			Keywords::String => {
 				let (name, val) = parse_string(&body)?;
-				output.push_str(format!("<string name={name} val={val}>").as_str());
+				output.push_str(format!("<string name={name} val={val}>\n").as_str());
 			},
 			_ => ()
 		}
