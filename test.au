@@ -6,8 +6,12 @@ int num4=4;
 bool bool1 = true
 bool bool2=false;
 
-str str1 = "test"
+str str1 = "test t"
 str str2="test2";
+
+int[] arr1 = [1, 2, 3, 4]
+bool[] arr2=[true, false, true];
+str[] arr3 = ["test", "test2"]
 
 for i in 1 to 5 {
 	print("hi")

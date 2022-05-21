@@ -26,7 +26,9 @@ pub enum Keywords {
 	For,
 	Func,
 	Integer,
-	Array,
+	IntArray,
+	StringArray,
+	BoolArray,
 	Bool,
 	Concurrent,
 	String,
@@ -39,7 +41,9 @@ fn match_keyword(kw: &str) -> Keywords {
 		"for" => Keywords::For,
 		"fn" => Keywords::Func,
 		"int" => Keywords::Integer,
-		"arr" => Keywords::Array,
+		"int[]" => Keywords::IntArray,
+		"str[]" => Keywords::StringArray,
+		"bool[]" => Keywords::BoolArray,
 		"bool" => Keywords::Bool,
 		"conc" => Keywords::Concurrent,
 		"str" => Keywords::String,
@@ -71,7 +75,7 @@ pub fn tokenize<T: ToString>(t: T) -> Result<Vec<u8>, GenericError> {
 				let (name, val) = parse_bool(&body)?;
 				output.push_str(format!("<bool;name={name};val={val}>\n").as_str());
 			},
-			Keywords::String => {
+			Keywords::String | Keywords::IntArray | Keywords::StringArray | Keywords::BoolArray => {
 				let (name, val) = parse_string(&body)?;
 				output.push_str(format!("<string;name={name};val={val}>\n").as_str());
 			},
@@ -121,3 +125,14 @@ fn parse_string(line: &str) -> Result<(String, String), GenericError> {
 
 	Ok( (name.to_owned(), rich_type) )
 }
+
+// We'll actually parse the array in the AST step
+// fn parse_arr(line: &str) -> Result<(String, String), GenericError> {
+// 	let t = line.replace(' ', "");  // Strip whitespace 
+// 	let split = t.split('=').collect::<Vec<&str>>();
+
+// 	let (name, raw_type) = (split[0], split[1]);
+// 	let rich_type = raw_type.to_string();
+
+// 	Ok( (name.to_owned(), rich_type) )
+// }
