@@ -22,21 +22,6 @@ impl From<ParseIntError> for GenericError {
 
 ////////////
 
-pub enum Keywords {
-	For,
-	Func,
-	Integer,
-	IntArray,
-	StringArray,
-	BoolArray,
-	Bool,
-	Concurrent,
-	String,
-	If,
-	Ident(String),
-	Print
-}
-
 fn match_keyword(kw: &str) -> Keywords {
 	match kw {
 		"for" => Keywords::For,
