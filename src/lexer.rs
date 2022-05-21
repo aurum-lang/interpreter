@@ -33,7 +33,8 @@ pub enum Keywords {
 	Concurrent,
 	String,
 	If,
-	Ident(String)
+	Ident(String),
+	Print
 }
 
 fn match_keyword(kw: &str) -> Keywords {
@@ -48,6 +49,7 @@ fn match_keyword(kw: &str) -> Keywords {
 		"conc" => Keywords::Concurrent,
 		"str" => Keywords::String,
 		"if" => Keywords::If,
+		"print" => Keywords::Print,
 		_ => Keywords::Ident(kw.to_owned())
 	}
 }
