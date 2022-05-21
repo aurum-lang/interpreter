@@ -59,6 +59,10 @@ pub fn tokenize<T: ToString>(t: T) -> Result<Vec<u8>, GenericError> {
 	let mut output: String = String::new();
 
 	for line in file.lines() {
+		if line.trim() == "" || line.starts_with("//") {
+			continue;
+		}
+
 		let mut line = line;
 		if line.ends_with(';') {
 			line = &line[..line.len() - 1]
@@ -75,9 +79,22 @@ pub fn tokenize<T: ToString>(t: T) -> Result<Vec<u8>, GenericError> {
 				let (name, val) = parse_bool(&body)?;
 				output.push_str(format!("<bool;name={name};val={val}>\n").as_str());
 			},
-			Keywords::String | Keywords::IntArray | Keywords::StringArray | Keywords::BoolArray => {
+			Keywords::String => {
 				let (name, val) = parse_string(&body)?;
 				output.push_str(format!("<string;name={name};val={val}>\n").as_str());
+			},
+			Keywords::IntArray => {
+				let (name, val) = parse_string(&body)?;
+				output.push_str(format!("<intarr;name={name};val={val}>\n").as_str());
+			},
+			Keywords::StringArray => {
+				todo!("String arrays are not implemented yet!");
+				// let (name, val) = parse_string(&body)?;
+				// output.push_str(format!("<strarr;name={name};val={val}>\n").as_str());
+			},
+			Keywords::BoolArray => {
+				let (name, val) = parse_string(&body)?;
+				output.push_str(format!("<boolarr;name={name};val={val}>\n").as_str());
 			},
 			_ => ()
 		}
