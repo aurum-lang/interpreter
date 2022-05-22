@@ -9,14 +9,14 @@ pub fn tokenize<T: ToString>(t: T) -> Result<Vec<u8>, GenericError> {
 		let words: Vec<&str> = line.split(' ').collect::<Vec<&str>>();
 			match words[0] {
 			"int" | "bool" | "str" => {
-				let assignment = words[1..].concat();
+				let assignment = words[1..].join(" ");
 				let sides: Vec<&str> = assignment.split('=').collect();
 				if sides.len() != 2 {
 					return Err(GenericError {})
 				}
 				let (name, body) = (sides[0].trim(), sides[1].trim());
 
-				buffer.push_str(format!("<{}><Ident({})><{}>", words[0], name, body).as_str());
+				buffer.push_str(format!("<{}><Identifier({})><Literal({})>", words[0], name, body).as_str());
 				buffer.push('\n');
 			},
 			"int[]" => {
@@ -27,7 +27,7 @@ pub fn tokenize<T: ToString>(t: T) -> Result<Vec<u8>, GenericError> {
 				}
 				let (name, body) = (sides[0].trim(), sides[1].trim());
 
-				buffer.push_str(format!("<intarr><Ident({})><{}>", name, body).as_str());
+				buffer.push_str(format!("<intarr><Identifier({})><{}>", name, body).as_str());
 				buffer.push('\n');
 			},
 			"bool[]" => {
@@ -38,7 +38,7 @@ pub fn tokenize<T: ToString>(t: T) -> Result<Vec<u8>, GenericError> {
 				}
 				let (name, body) = (sides[0].trim(), sides[1].trim());
 
-				buffer.push_str(format!("<boolarr><Ident({})><{}>", name, body).as_str());
+				buffer.push_str(format!("<boolarr><Identifier({})><{}>", name, body).as_str());
 				buffer.push('\n');
 			},
 			"str[]" => {
@@ -49,7 +49,7 @@ pub fn tokenize<T: ToString>(t: T) -> Result<Vec<u8>, GenericError> {
 				}
 				let (name, body) = (sides[0].trim(), sides[1].trim());
 
-				buffer.push_str(format!("<strarr><Ident({})><{}>", name, body).as_str());
+				buffer.push_str(format!("<strarr><Identifier({})><{}>", name, body).as_str());
 				buffer.push('\n');
 			},
 			_ => ()

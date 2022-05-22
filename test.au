@@ -6,7 +6,7 @@ int num4=4;
 bool bool1 = true
 bool bool2=false;
 
-str str1 = "test t"
+str str1 = "test today true"
 str str2="test2";
 
 int[] arr1 = [1, 2, 3, 4]
