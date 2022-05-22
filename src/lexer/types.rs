@@ -3,7 +3,9 @@ use std::num::ParseIntError;
 use std::error::Error;
 
 #[derive(Debug, Clone)]
-pub struct GenericError {}
+pub struct GenericError {
+	pub msg: String
+}
 
 impl std::fmt::Display for GenericError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -16,7 +18,7 @@ impl Error for GenericError {}
 
 impl From<ParseIntError> for GenericError {
     fn from(_: ParseIntError) -> Self {
-        Self {}
+        Self { msg: "".into() }
     }
 }
 
@@ -49,5 +51,15 @@ pub fn match_keyword(kw: &str) -> Keywords {
 		"if" => Keywords::If,
 		"print" => Keywords::Print,
 		_ => Keywords::Ident(kw.to_owned())
+	}
+}
+
+pub fn match_symbol(c: char) -> Option<String> {
+	match c {
+		'{' => Some("LBracket".into()),
+		'}' => Some("RBracket".into()),
+		'(' => Some("LParen".into()),
+		')' => Some("RParen".into()),
+		_ => None
 	}
 }
