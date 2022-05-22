@@ -5,6 +5,7 @@ int num4=4;
 
 bool bool1 = true
 bool bool2=false;
+int num2
 
 str str1 = "test today true"
 str str2="test2";
