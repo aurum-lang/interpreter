@@ -11,12 +11,12 @@ str str2="test2";
 
 int[] arr1 = [1, 2, 3, 4]
 bool[] arr2=[true, false, true];
-// str[] arr3 = ["test", "test2"]
+str[] arr3 = ["test", "test2"]
 
-for i in 1 to 5 {
-	print("hi")
-}
+//for i in 1 to 5 {
+//	print("hi")
+//}
 
-fn e() {
-	print("test")
-}
+//fn e() {
+//	print("test")
+//}
