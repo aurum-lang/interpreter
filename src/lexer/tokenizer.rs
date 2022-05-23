@@ -74,6 +74,35 @@ pub fn tokenize<T: ToString>(t: T) -> Result<Vec<u8>, GenericError> {
 						}
 					}
 					// buffer.push_str(format!("<Literal({})>", words[3]).as_str());
+				} else {
+					if words.len() != 5 {
+						return Err(GenericError { msg: format!("Malformed for loop at line {ln}.") })
+					}
+					for w in (words[3..]).iter() {
+						if let Some(res) = match_symbol(w.chars().collect::<Vec<char>>()[0]) {
+							buffer.push_str(format!("<{}>", res).as_str());
+						} else {
+							buffer.push_str(format!("<{}>", get_type(w)).as_str());
+						}
+					}
+				}
+				buffer.push('\n');
+			},
+			"fn" => {
+				buffer.push_str("<Keyword(function)>");
+				if !words[1].ends_with("()") {
+					return Err(GenericError { msg: format!("Incomplete function definition at line {ln}.") })
+				}
+				buffer.push_str(format!("<Identifier({})>", words[1].replace('(', "").replace(')', "")).as_str());
+				buffer.push_str("<LParen>");
+				buffer.push_str("<RParen>");
+				
+				for w in words[2..].iter() {
+					if let Some(res) = match_symbol(w.chars().collect::<Vec<char>>()[0]) {
+						buffer.push_str(format!("<{}>", res).as_str());
+					} else {
+						buffer.push_str(format!("<{}>", get_type(w)).as_str());
+					}
 				}
 				buffer.push('\n');
 			},
