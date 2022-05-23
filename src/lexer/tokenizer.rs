@@ -74,10 +74,15 @@ pub fn tokenize<T: ToString>(t: T) -> Result<Vec<u8>, GenericError> {
 						}
 					}
 					// buffer.push_str(format!("<Literal({})>", words[3]).as_str());
-				} else { return Err(GenericError { msg: format!("Malformed for loop at line {ln}.") }) }
+				}
 				buffer.push('\n');
 			},
-			_ => ()
+			_ => {
+				if let Some(res) = match_symbol(line.chars().collect::<Vec<char>>()[0]) {
+					buffer.push_str(format!("<{}>", res).as_str());
+					buffer.push('\n');
+				}
+			}
 		}
 		ln += 1;
 	}

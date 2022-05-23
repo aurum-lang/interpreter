@@ -17,6 +17,10 @@ for i in 1 to 5 {
 	print("hi")
 }
 
+for x in arr2 {
+	print("hi 2")
+}
+
 fn e() {
 	print("test")
 }
