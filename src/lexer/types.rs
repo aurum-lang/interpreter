@@ -54,12 +54,14 @@ pub fn match_keyword(kw: &str) -> Keywords {
 	}
 }
 
-pub fn match_symbol(c: char) -> Option<String> {
+pub fn match_symbol(c: &str) -> Option<String> {
 	match c {
-		'{' => Some("LBracket".into()),
-		'}' => Some("RBracket".into()),
-		'(' => Some("LParen".into()),
-		')' => Some("RParen".into()),
+		"{" => Some("LBracket".into()),
+		"}" => Some("RBracket".into()),
+		"(" => Some("LParen".into()),
+		")" => Some("RParen".into()),
+		"==" => Some("EqualTo".into()),
+		"=" => Some("Assign".into()),
 		_ => None
 	}
 }

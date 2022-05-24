@@ -24,3 +24,7 @@ for x in arr2 {
 fn e() {
 	print("test")
 }
+
+if num == 2 {
+	print("test")
+}

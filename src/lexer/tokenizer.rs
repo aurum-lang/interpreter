@@ -67,7 +67,7 @@ pub fn tokenize<T: ToString>(t: T) -> Result<Vec<u8>, GenericError> {
 						return Err(GenericError { msg: format!("Malformed for loop at line {ln}.") })
 					}
 					for w in (words[3..]).iter() {
-						if let Some(res) = match_symbol(w.chars().collect::<Vec<char>>()[0]) {
+						if let Some(res) = match_symbol(w) {
 							buffer.push_str(format!("<{}>", res).as_str());
 						} else {
 							buffer.push_str(format!("<{}>", get_type(w)).as_str());
@@ -79,7 +79,7 @@ pub fn tokenize<T: ToString>(t: T) -> Result<Vec<u8>, GenericError> {
 						return Err(GenericError { msg: format!("Malformed for loop at line {ln}.") })
 					}
 					for w in (words[3..]).iter() {
-						if let Some(res) = match_symbol(w.chars().collect::<Vec<char>>()[0]) {
+						if let Some(res) = match_symbol(w) {
 							buffer.push_str(format!("<{}>", res).as_str());
 						} else {
 							buffer.push_str(format!("<{}>", get_type(w)).as_str());
@@ -98,7 +98,18 @@ pub fn tokenize<T: ToString>(t: T) -> Result<Vec<u8>, GenericError> {
 				buffer.push_str("<RParen>");
 				
 				for w in words[2..].iter() {
-					if let Some(res) = match_symbol(w.chars().collect::<Vec<char>>()[0]) {
+					if let Some(res) = match_symbol(w) {
+						buffer.push_str(format!("<{}>", res).as_str());
+					} else {
+						buffer.push_str(format!("<{}>", get_type(w)).as_str());
+					}
+				}
+				buffer.push('\n');
+			},
+			"if" => {
+				buffer.push_str("<Keyword(if)>");
+				for w in (words[1..]).iter() {
+					if let Some(res) = match_symbol(w) {
 						buffer.push_str(format!("<{}>", res).as_str());
 					} else {
 						buffer.push_str(format!("<{}>", get_type(w)).as_str());
@@ -107,7 +118,7 @@ pub fn tokenize<T: ToString>(t: T) -> Result<Vec<u8>, GenericError> {
 				buffer.push('\n');
 			},
 			_ => {
-				if let Some(res) = match_symbol(line.chars().collect::<Vec<char>>()[0]) {
+				if let Some(res) = match_symbol(line) {
 					buffer.push_str(format!("<{}>", res).as_str());
 					buffer.push('\n');
 				}
