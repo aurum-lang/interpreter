@@ -39,7 +39,7 @@ pub fn tokenize<T: ToString>(t: T) -> Result<Vec<u8>, GenericError> {
 				}
 				let (name, body) = (sides[0].trim(), sides[1].trim());
 
-				buffer.push_str(format!("<Keyword({})><Identifier({})><Literal({})>", words[0], name, body).as_str());
+				buffer.push_str(format!("<Keyword({})><Identifier({})><{}>", words[0], name, get_type(body)).as_str());
 				buffer.push('\n');
 			},
 			"int[]" => {
@@ -177,10 +177,19 @@ fn parse(s: String) -> String {
 
 fn get_type(word: &str) -> String {
 	let trim = word.trim();
-	if word == "true" || word == "false" || word.parse::<i32>().is_ok() || 
-	(trim.starts_with('"') && trim.ends_with('"')) {
-		format!("Literal({word})")
+	if word == "true" || word == "false" {
+		format!("BoolLiteral({word})")
+	} else if word.parse::<i32>().is_ok() {
+		format!("IntLiteral({word})")
+	} else if trim.starts_with('"') && trim.ends_with('"') {
+		format!("StringLiteral({})", word.replace('"', ""))
 	} else {
 		format!("Keyword({word})")
 	}
+	// if word == "true" || word == "false" || word.parse::<i32>().is_ok() || 
+	// (trim.starts_with('"') && trim.ends_with('"')) {
+	// 	format!("Literal({word})")
+	// } else {
+	// 	format!("Keyword({word})")
+	// }
 }
