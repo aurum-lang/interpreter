@@ -1,5 +1,6 @@
 #![allow(dead_code)]
 use super::types::{ GenericError, match_symbol };
+use regex::Regex;
 
 pub fn tokenize<T: ToString>(t: T) -> Result<Vec<u8>, GenericError> {
 	let file: String = parse(t.to_string());
@@ -11,9 +12,25 @@ pub fn tokenize<T: ToString>(t: T) -> Result<Vec<u8>, GenericError> {
 			ln += 1;
 			continue;
 		}  // Moved to preserve line count
+		let line = line.trim();
 
 		let words: Vec<&str> = line.split(' ').collect::<Vec<&str>>();
-			match words[0] {
+		if words[0].starts_with("print") {
+			let word = words[0];
+			let expr = Regex::new(r"\(.*?\)").unwrap();
+			let res = expr.find(word);
+				
+			if let Some(m) = res {
+				buffer.push_str("<Keyword(print)>");
+				buffer.push_str(format!(
+					"<{}>",
+					get_type(&word[m.range()].replace('(', "").replace(')', "")),
+				).as_str());
+				buffer.push('\n');
+			}
+			continue;
+		}
+		match words[0] {
 			"int" | "bool" | "str" => {
 				let assignment = words[1..].join(" ");
 				let sides: Vec<&str> = assignment.split('=').collect();
@@ -90,12 +107,12 @@ pub fn tokenize<T: ToString>(t: T) -> Result<Vec<u8>, GenericError> {
 			},
 			"fn" => {
 				buffer.push_str("<Keyword(function)>");
-				if !words[1].ends_with("()") {
-					return Err(GenericError { msg: format!("Incomplete function definition at line {ln}.") })
-				}
+				// if !words[1].ends_with("()") {
+				// 	return Err(GenericError { msg: format!("Incomplete function definition at line {ln}.") })
+				// }
 				buffer.push_str(format!("<Identifier({})>", words[1].replace('(', "").replace(')', "")).as_str());
-				buffer.push_str("<LParen>");
-				buffer.push_str("<RParen>");
+				// buffer.push_str("<LParen>");
+				// buffer.push_str("<RParen>");
 				
 				for w in words[2..].iter() {
 					if let Some(res) = match_symbol(w) {
@@ -114,6 +131,17 @@ pub fn tokenize<T: ToString>(t: T) -> Result<Vec<u8>, GenericError> {
 					} else {
 						buffer.push_str(format!("<{}>", get_type(w)).as_str());
 					}
+				}
+				buffer.push('\n');
+			},
+			"print" => {
+				let word = words[1];
+				let expr = Regex::new(r"/\(.*?\)/g").unwrap();
+				let res = expr.find(word);
+				
+				if let Some(m) = res {
+					buffer.push_str("<Keyword(print)>");
+					buffer.push_str(get_type(&word[m.range()]).as_str());
 				}
 				buffer.push('\n');
 			},

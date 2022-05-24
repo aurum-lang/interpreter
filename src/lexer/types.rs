@@ -62,6 +62,10 @@ pub fn match_symbol(c: &str) -> Option<String> {
 		")" => Some("RParen".into()),
 		"==" => Some("EqualTo".into()),
 		"=" => Some("Assign".into()),
+		"+=" => Some("AssignAdd".into()),
+		"-=" => Some("AssignSubtract".into()),
+		"/=" => Some("AssignDivide".into()),
+		"*=" => Some("AssignMultiply".into()),
 		_ => None
 	}
 }
